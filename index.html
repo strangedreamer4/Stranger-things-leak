@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stranger Things Leak</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-functions.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBduCdHC4gvkHgxACmezLAHZRmvf3g0ZVQ",
+            authDomain: "my-project2032-1687241010726.firebaseapp.com",
+            databaseURL: "https://my-project2032-1687241010726-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "my-project2032-1687241010726",
+            storageBucket: "my-project2032-1687241010726.appspot.com",
+            messagingSenderId: "191512348467",
+            appId: "1:191512348467:web:c71db2b64bba1943d9e046"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Log IP function
+        function logIP() {
+            const logIP = firebase.functions().httpsCallable('logIP');
+            logIP().then(result => {
+                console.log(result.data);
+            }).catch(error => {
+                console.error("Error logging IP: ", error);
+            });
+        }
+
+        // Log IP on page load
+        window.onload = logIP;
+    </script>
 </head>
 <body>
     <header>
