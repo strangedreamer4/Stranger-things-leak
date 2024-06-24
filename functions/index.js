@@ -2,18 +2,20 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.logIP = functions.https.onRequest((request, response) => {
-    const ip = request.headers['fastly-client-ip'] || 
-               request.headers['x-forwarded-for'] || 
-               request.connection.remoteAddress;
-    const timestamp = Date.now();
+exports.logIP = functions.https.onCall((data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'Only authenticated users can log IP addresses.');
+    }
 
-    return admin.database().ref('/ip_logs').push({ ip, timestamp })
+    const ip = data.ip;
+    const timestamp = Date.now();
+    const uid = context.auth.uid;
+
+    return admin.database().ref(`/ip_logs/${uid}`).push({ ip, timestamp })
         .then(() => {
-            response.send("IP logged successfully");
+            return { message: `IP ${ip} logged successfully for user ${uid}` };
         })
-        .catch((error) => {
-            console.error("Error logging IP: ", error);
-            response.status(500).send("Error logging IP");
+        .catch(error => {
+            throw new functions.https.HttpsError('internal', 'Error logging IP', error);
         });
 });
