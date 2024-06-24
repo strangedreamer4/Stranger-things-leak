@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-functions.js"></script>
     <script>
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -22,17 +21,16 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // Log IP function
+        // Function to log IP address and timestamp
         function logIP() {
-            const logIP = firebase.functions().httpsCallable('logIP');
-            logIP().then(result => {
-                console.log(result.data);
-            }).catch(error => {
-                console.error("Error logging IP: ", error);
-            });
+            const ip = "dummy-ip"; // Replace with actual IP logging method if possible
+            const timestamp = Date.now();
+            firebase.database().ref('ip_logs').push({ ip, timestamp })
+                .then(() => console.log("IP logged successfully"))
+                .catch(error => console.error("Error logging IP:", error));
         }
 
-        // Log IP on page load
+        // Call logIP when page loads
         window.onload = logIP;
     </script>
 </head>
